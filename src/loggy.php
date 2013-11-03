@@ -1,7 +1,36 @@
 <?php
  /**
   * Loggy is the class responsible from logging events and errors.
+  * It writes down logs in a file called log.gy, and can also read the data,
+  * format it and return a formatted version for you.
   *
+  * Usage :
+  * 
+  * Create an instance, using the constructor. If you want to use 
+  * a different filename and/or a different separator, pass them as parameters.
+  * 
+  *     - $loggy = new Loggy($myLogFile, $mySeparator);
+  * 
+  * Anywhere in your script, use the "w" method to write a new entry.
+  * 
+  *     - $loggy->w("This is a dummy log message", "Written by this Tag");
+  * 
+  * Loggy will automatically detect the IP address and pick the date and time
+  * information, and add them into your log entry.
+  * 
+  * 
+  * Exporting Loggy Entries :
+  * 
+  * Use "export" method, which returns you the HTML formatted 
+  * loggy data by default.
+  * Export method takes a parameter that specifies what format do you want your
+  * data in.
+  * 
+  *     - $myHTMLLogData = $loggy->export();
+  *     - $myJSONLogData = $loggy->export("JSON");
+  *     - $myXMLLogData  = $loggy->export("XML");
+  * 
+  * 
   * @author: Mehmet Seckin
   * @email : seckin92@gmail.com
   * @type  : Library
@@ -12,7 +41,7 @@ class Loggy {
     private $filename;      // The filename, "log.gy" by default.
     private $separator;     // The character or pattern to separate log information.
                             // "|" by default.
-    private $format = array("ip", "tag", "message", "date");
+    private $format = array("ID", "ip", "tag", "message", "date");
     function __construct($filename = null, $separator = "|") {
          if(is_null($filename)) $filename = "log.gy";
         $this->filename = $filename;
@@ -25,10 +54,12 @@ class Loggy {
     }
     
     public function w($message, $tag = "Unknown") {
+        $id = "LGY_".time();                // Create an unique ID for the entry
         $ip = $this->getClientIPAddress();  // Get the client IP
         $date = date("Y-m-d H:i:s");        // Get the date and time
         // Creating the entry. Entries consist from a single line.
         $entry = "";
+        $entry .= $this->clean($id) . $this->separator;
         $entry .= $this->clean($ip) . $this->separator;
         $entry .= $this->clean($tag) . $this->separator;
         $entry .= $this->clean($message) . $this->separator;
@@ -77,11 +108,60 @@ class Loggy {
     }
     
     private function exportXML(){
-        // TODO: Export XML.
+        $this->handle = fopen($this->filename, "r");
+        
+        // Creating an XML structure 
+        $output = "<?xml version=\"1.0\"?>";
+        $output .="<entries>";
+        while(!feof($this->handle)) {
+            $line = fgets($this->handle);
+            if($line == "") continue;
+            $output .= "<entry>";
+            $entries = explode($this->separator, $line);
+            $i = 0;
+            foreach($entries as $entry) {                
+                $key = $this->format[$i];
+                $output .= "<$key>$entry</$key>";
+                $i++;
+            }
+            $output .= "</entry>";
+        }
+        $output .= "</entries>";
+        fclose($this->handle);
+        return $output;       
     }
     
     private function exportHTML(){
-        // TODO: Export HTML.
+        $this->handle = fopen($this->filename, "r");
+        
+        // Creating an HTML Table Structure
+        $output = "<table id=\"loggy-entries\">";
+        
+        // Giving the headers
+        $output .= "<tr>";
+        foreach($this->format as  $header) {
+            $output .= "<th>$header</th>";
+        }
+        $output .= "</th>";
+        
+        // Read entries and format them as HTML table rows.
+        $output .= "<tr>";
+        while(!feof($this->handle)) {
+            $line = fgets($this->handle);
+            // Nobody likes an empty row, if the line is empty, continue.
+            if($line == "") continue;
+            $entries = explode($this->separator, $line);
+            foreach($entries as $entry) {
+                $output .= "<td>$entry</td>";
+            }
+            $output .= "</tr>";
+        }
+        $output .= "</table>";
+        
+        // Closing the file.
+        fclose($this->handle);
+        
+        return $output;   
     }
     
     /**
