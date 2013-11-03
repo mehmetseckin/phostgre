@@ -1,8 +1,8 @@
 <?php
  /**
-  * Loggy is the class responsible from logging events and errors.
+  * Loggy is a basic class responsible from logging events and errors.
   * It writes down logs in a file called log.gy, and can also read the data,
-  * format it and return a formatted version for you.
+  * and return a formatted version for you.
   *
   * Usage :
   * 
@@ -54,7 +54,7 @@ class Loggy {
     }
     
     public function w($message, $tag = "Unknown") {
-        $id = "LGY_".time();                // Create an unique ID for the entry
+        $id = "LGY_".  microtime(true);         // Create an unique ID for the entry
         $ip = $this->getClientIPAddress();  // Get the client IP
         $date = date("Y-m-d H:i:s");        // Get the date and time
         // Creating the entry. Entries consist from a single line.
@@ -69,12 +69,12 @@ class Loggy {
     }
     
     private function clean($dirty) {
-        // Look for the separator pattern and remove it. 
+        // Look for the separator pattern and remove it if exists.. 
         $clean = str_replace($this->separator, "", $dirty);
         return $clean;
     }
 
-    public function export($mode = "JSON") {
+    public function export($mode = "HTML") {
         switch($mode) {
             case "JSON" :
                 return $this->exportJSON();
@@ -88,19 +88,19 @@ class Loggy {
     private function exportJSON() {
         $this->handle = fopen($this->filename, "r");
         $output = "{\"entries\" : [";
-        while(!feof($this->handle)) {
+        while(!feof($this->handle) && $this->handle) {
             $line = fgets($this->handle);
             if($line == "") continue;
             $entries = explode($this->separator, $line);
-            $i = 0;
-            $tmp = array();
-            foreach($entries as $entry) {
-                // Escape double quotes and initialize array for JSON encoding                
-                $tmp[$this->format[$i]] = str_replace('"', '\\"', $entry);
-                $i++;
+            foreach($entries as &$entry) {
+                // Iterate through the array and escape double quotes                
+                $entry = str_replace('"', '\"', $entry);
             }
-            $output .= json_encode($tmp) . ", ";
+            // Combine the format array and the entries, and encode them.
+            $output .= json_encode(array_combine($this->format, $entries)) . ", ";
         }
+        
+        // Trim the last comma and space...
         $output = substr($output, 0, strlen($output)-2);
         $output .= "]}";
         fclose($this->handle);
