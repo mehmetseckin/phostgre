@@ -41,9 +41,15 @@ class Loggy {
     private $handle;        // The file handle for the log operations
     private $filename;      // The filename, "log.gy" by default.
     private $separator;     // The character or pattern to separate log information.
-    // "|" by default.
     private $format = array("ID", "ip", "tag", "message", "date");
 
+    /**
+     * Creates and initializes the object according to the given
+     * settings.
+     * 
+     * @param string $filename A desired name for the log file. "log.gy" by default.
+     * @param type $separator A desired separator pattern. "|" by default.
+     */
     function __construct($filename = null, $separator = "|") {
         if (is_null($filename))
             $filename = "log.gy";
@@ -55,6 +61,12 @@ class Loggy {
         $this->handle = fopen($this->filename, "a+");
     }
 
+    /**
+     * Writes down your message and tag with additional info, into the log file.
+     * 
+     * @param string $message The log message to be written.
+     * @param string $tag
+     */
     public function w($message, $tag = "Unknown") {
         $id = "LGY_" . microtime(true);         // Create an unique ID for the entry
         $ip = $this->getClientIPAddress();  // Get the client IP
@@ -70,12 +82,24 @@ class Loggy {
         fwrite($this->handle, $entry);
     }
 
+    /**
+     * Looks for the separator and removes it.
+     * 
+     * @param string $dirty The dirty string to be cleaned.
+     * @return string
+     */
     private function clean($dirty) {
         // Look for the separator pattern and remove it if exists.. 
         $clean = str_replace($this->separator, "", $dirty);
         return $clean;
     }
 
+    /**
+     * Returns the log entries in the desired format.
+     * 
+     * @param string $mode HTML, JSON and XML are supported. 
+     * @return string
+     */
     public function export($mode = "HTML") {
         switch ($mode) {
             case "JSON" :
@@ -87,6 +111,12 @@ class Loggy {
         }
     }
 
+    /**
+     * Reads the log entries, encodes the data according to JSON and returns
+     * the output.
+     * 
+     * @return string 
+     */
     private function exportJSON() {
         $this->handle = fopen($this->filename, "r");
         $output = "{\"entries\" : [";
@@ -110,6 +140,12 @@ class Loggy {
         return $output;
     }
 
+    /**
+     * Reads the log entries, formats them into a XML structure and returns the
+     * HTML output.
+     * 
+     * @return string 
+     */
     private function exportXML() {
         $this->handle = fopen($this->filename, "r");
 
@@ -135,6 +171,12 @@ class Loggy {
         return $output;
     }
 
+    /**
+     * Reads the log entries, formats them as a HTML table and returns the
+     * HTML output.
+     * 
+     * @return string 
+     */
     private function exportHTML() {
         $this->handle = fopen($this->filename, "r");
 
@@ -187,8 +229,12 @@ class Loggy {
         return $ip;
     }
 
+    /**
+     * Destroys the object and closes the file handle if its still active.
+     */
     public function __destruct() {
-        fclose($this->handle);
+        if ($this->handle)
+            fclose($this->handle);
     }
 
 }
