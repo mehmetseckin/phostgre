@@ -56,8 +56,13 @@ class Loggy {
         $this->filename = $filename;
 
         $this->separator = $separator;
-        // a+ mode to open the file and place the cursor at the end. 
-        // If the file doesn't exist, attempt to create it.
+
+        if (file_exists($this->filename))
+            if (!is_writable ($this->filename))
+                die("$filename is not writable! Make sure you have the right permissions.");
+        
+        // Open/Create the log file.
+        // a+ mode to open the file and place the cursor at the end.
         $this->handle = fopen($this->filename, "a+");
     }
 
@@ -71,14 +76,17 @@ class Loggy {
         $id = "LGY_" . microtime(true);         // Create an unique ID for the entry
         $ip = $this->getClientIPAddress();  // Get the client IP
         $date = date("Y-m-d H:i:s");        // Get the date and time
-        // Creating the entry. Entries consist from a single line.
+        // Creating the entry. An entry is a single line, contains information..
         $entry = "";
         $entry .= $this->clean($id) . $this->separator;
         $entry .= $this->clean($ip) . $this->separator;
         $entry .= $this->clean($tag) . $this->separator;
         $entry .= $this->clean($message) . $this->separator;
         $entry .= $this->clean($date) . PHP_EOL;
-        // Write down the entry.
+        // Check if the handle is alright, if not, attempt to open the file.
+        if (!$this->handle)
+            $this->handle = fopen($this->filename, "a+");
+        // Write down the entry.        
         fwrite($this->handle, $entry);
     }
 
@@ -110,7 +118,16 @@ class Loggy {
                 return $this->exportHTML();
         }
     }
-
+    /**
+     * Truncates the loggy file.
+     */
+    public function truncate() {
+        if($this->handle) fclose ($this->handle);
+        // Erase all the content by opening it with writing rights.
+        $this->handle = fopen($this->filename, "w");
+        
+    }
+    
     /**
      * Reads the log entries, encodes the data according to JSON and returns
      * the output.
