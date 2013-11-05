@@ -1,6 +1,6 @@
 <?php
 
-require_once "src/init.php";
+require_once "init.php";
 
 $loggy = new Loggy("debug.log.gy");
 $loggy->w("Dummy debug message with \"QUOTES\"!!", "Tag!");
