@@ -97,6 +97,8 @@ class Loggy {
      * @return string
      */
     private function clean($dirty) {
+        // Trim the whitespace.
+        $dirty = trim(preg_replace('/\s+/', ' ', $dirty));
         // Look for the separator pattern and remove it if exists.. 
         $clean = str_replace($this->separator, "", $dirty);
         return $clean;
