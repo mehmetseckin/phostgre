@@ -1,0 +1,23 @@
+CREATE TABLE employees (
+    id integer NOT NULL,
+    name character varying(24),
+    salary integer,
+    hired date
+);
+
+
+ALTER TABLE public.employees OWNER TO postgres;
+
+COPY employees (id, name, salary, hired) FROM stdin;
+1	Bill Johnson	1250	2012-10-01
+2	Samantha Spark	2200	2011-06-02
+3	Garrett Schwartz	3200	2011-02-21
+4	Raghavesh Prakash	1500	2013-04-01
+5	Vijay Singh	1650	2013-01-01
+\.
+
+ALTER TABLE ONLY employees
+    ADD CONSTRAINT pk_employees_id PRIMARY KEY (id);
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO phostgre;
+
