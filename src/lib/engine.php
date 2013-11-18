@@ -51,9 +51,9 @@ class Engine {
      */
     function complain() {
         if($this->hasErrors)
-            print "<p class=\"error-message\">$this->errorMessage</p>";
+            return "<p class=\"error-message\">$this->errorMessage</p>";
         else
-            print "<p class=\"error-message\">Everything's okay!</p>";
+            return "<p class=\"error-message\">Everything's okay!</p>";
     }
     /**
      * Returns the current connection status.

@@ -52,7 +52,7 @@ class Loggy {
      */
     function __construct($filename = null, $separator = "|") {
         if (is_null($filename))
-            $filename = "log.gy";
+            $filename = "loggy/logs/log.gy";
         $this->filename = $filename;
 
         $this->separator = $separator;
@@ -122,10 +122,14 @@ class Loggy {
      * Truncates the loggy file.
      */
     public function truncate() {
-        if($this->handle) fclose ($this->handle);
         // Erase all the content by opening it with writing rights.
         $this->handle = fopen($this->filename, "w");
-        
+        if(!$this->handle) {
+            return "Loggy: Error while truncating $this->filename : " . error_get_last();
+        }
+        else {
+            return "$this->filename has been successfully truncated.";
+        }
     }
     
     /**
@@ -201,12 +205,14 @@ class Loggy {
         $output = "<table id=\"loggy-entries\">";
 
         // Giving the headers
+        $output .= "<thead>";
         $output .= "<tr>";
         foreach ($this->format as $header) {
             $output .= "<th>$header</th>";
         }
-        $output .= "</th>";
-
+        $output .= "</thead>";
+        $output .= "</tr>";
+        $output .= "<tbody>";
         // Read entries and format them as HTML table rows.
         $output .= "<tr>";
         while (!feof($this->handle)) {
@@ -220,6 +226,7 @@ class Loggy {
             }
             $output .= "</tr>";
         }
+        $output .= "</tbody>";
         $output .= "</table>";
 
         // Closing the file.
@@ -244,6 +251,14 @@ class Loggy {
         else
             $ip = "UNKNOWN";
         return $ip;
+    }
+    
+    /**
+     * Retrieves the filename.
+     * @return string
+     */
+    public function getFileName() {
+        return $this->filename;
     }
 
     /**

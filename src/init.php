@@ -9,6 +9,11 @@ define("PgSQL_PASSWORD", "phostgre");
 define("PgSQL_DATABASE", "phostgre_test");
 define("PgSQL_PORT"    , "5432");
 // Class definitions ...
-include "src/loggy.php";
-include "src/engine.php";
+
+// Initialize Loggy. Visit http://github.com/seckin92/loggy
+// for more information.
+include "loggy/load.php";
+
+// Initialize the Engine.
+include "lib/engine.php";
 ?>
