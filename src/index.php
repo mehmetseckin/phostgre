@@ -7,7 +7,7 @@ $loggy = new Loggy();
 $engine = new Engine();
 
 $engine->setQuery("
-        SELECT  proname, proargnames, prosrc 
+        SELECT  proname, proargnames
         FROM    pg_catalog.pg_namespace n
         JOIN    pg_catalog.pg_proc p
         ON      pronamespace = n.oid
@@ -16,7 +16,6 @@ $engine->setQuery("
 
 $results = $engine->loadMultiple();
 
-$loggy->w($engine->complain(), "Engine");
-
-print_r($results);
+if($engine->hasErrors())
+    $loggy->w($engine->complain(), "Engine");
 ?>

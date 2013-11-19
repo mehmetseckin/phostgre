@@ -135,6 +135,14 @@ class Engine {
     }
     
     /**
+     * Returns the hasErrors flag.
+     * @return boolean
+     */
+    function hasErrors() {
+        return $this->hasErrors;
+    }
+    
+    /**
      * If the query couldn't be executed properly, or produced an error,
      * sets the error flag and the error message. Else, returns back the raw
      * results.

@@ -14,6 +14,16 @@ define("PgSQL_PORT"    , "5432");
 // for more information.
 include "loggy/load.php";
 
+$old_error_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    $loggy = new Loggy('loggy/logs/error.log.gy');
+    $loggy->w($errstr, "$errfile:$errline");
+    
+});
+
+$old_exception_handler = set_exception_handler(function($e) {
+    $loggy = new Loggy('loggy/logs/error.log.gy');
+    $loggy->w($e->getMessage(), $e->getFile() .":". $e->getLine());
+});
 // Initialize the Engine.
 include "lib/engine.php";
 ?>
