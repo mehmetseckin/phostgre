@@ -9,7 +9,7 @@
  * @type  : Library
  */
 class Engine {
-
+    
     protected $queryString;
     protected $hasErrors;
     protected $errorMessage;
@@ -21,7 +21,66 @@ class Engine {
         // Connect to the database.
         $this->connect();
     }
-
+    
+    /**
+     * Gets the procedure list from the PostgreSQL database.
+     * @return array Names of the procedures stored in the database.
+     */
+    function getProcedures() {
+        $procedures = array();
+        // Get the procedure list
+        $this->setQuery("
+        SELECT  proname
+        FROM    pg_catalog.pg_namespace n
+        JOIN    pg_catalog.pg_proc p
+        ON      pronamespace = n.oid
+        WHERE   nspname = 'public' AND proowner <> 1;
+        ");
+        
+        $results = $this->loadMultiple();
+        
+        foreach($results as $procedure) {
+            array_push($procedures, $procedure["proname"]);
+        }
+        return $procedures;
+    }
+    
+    /**
+     * Checks if a procedure exists.
+     * @param type $procName
+     */
+    function procedureExists($procName) {
+        $procedures = $this->getProcedures();
+        return in_array($procName, $procedures);
+    }
+    
+    /**
+     * Take the unknown method name and sets the current query.
+     * Does all the dirty work and returns a result set or false if something's
+     * gone wrong.
+     * 
+     * @param string $method
+     * @param mixed $arguments
+     */
+    function __call($method,$arguments) {
+        if($this->procedureExists($method)) {
+            
+            $query = "SELECT \"$method\"(";
+            foreach($arguments as $argument) {
+                $query .= "'$argument',";
+            }
+            if(count($arguments) > 0) {
+                $query = substr($query, 0, strlen($query)-1);
+            }
+            $query .= ");";
+            $this->setQuery($query);
+        } else {
+            $this->hasErrors = true;
+            $this->errorMessage = "\"$method\" does not exist.";
+            return false;
+        }
+    }
+    
     function __destruct() {
         // Close the connection.
         $this->disconnect();
@@ -123,6 +182,38 @@ class Engine {
     }
     
     /**
+     * Executes the current query, and returns a single value.
+     */
+    function load() {
+       $result = $this->execute();
+       $data = null;
+        while($row = pg_fetch_array($result)) {
+            $data = $row[0];
+        }
+        pg_free_result($result);
+        return $data;        
+    }
+    
+    
+    /**
+     * Executes the current query, and returns a single value.
+     */
+    function loadBoolean() {
+       $result = $this->execute();
+       $data = null;
+        while($row = pg_fetch_array($result)) {
+            $data = $row[0];
+        }
+        pg_free_result($result);
+        if($data == PgSQL_TRUE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    /**
      * Executes the current query, and returns multiple rows as a 2D array.
      */
     function loadMultiple() {
@@ -140,6 +231,15 @@ class Engine {
      */
     function hasErrors() {
         return $this->hasErrors;
+    }
+    
+    /**
+     * Returns the connection object.
+     * 
+     * @return object PgSQL connection object or null
+     */
+    function getConnection() {
+        return $this->connection;
     }
     
     /**

@@ -6,16 +6,16 @@ $loggy = new Loggy();
 
 $engine = new Engine();
 
-$engine->setQuery("
-        SELECT  proname, proargnames
-        FROM    pg_catalog.pg_namespace n
-        JOIN    pg_catalog.pg_proc p
-        ON      pronamespace = n.oid
-        WHERE   nspname = 'public' AND proowner <> 1;
-        ");
+$name = "Mehmet Seckin";
+$salary = 5622;
+$hired = "2013-12-20";
 
-$results = $engine->loadMultiple();
+$engine->addEmployee($name, $salary, $hired);
+$result = $engine->loadBoolean();
+
+if($result) echo "Successfully added $name"; else echo "Failed adding $name";
 
 if($engine->hasErrors())
     $loggy->w($engine->complain(), "Engine");
+
 ?>
