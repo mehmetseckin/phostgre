@@ -1,3 +1,75 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.1.10
+-- Dumped by pg_dump version 9.1.10
+-- Started on 2013-12-03 12:47:37 EET
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 163 (class 3079 OID 11680)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1902 (class 0 OID 0)
+-- Dependencies: 163
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 175 (class 1255 OID 26080)
+-- Dependencies: 6 489
+-- Name: addEmployee(character varying, integer, date); Type: FUNCTION; Schema: public; Owner: phostgre
+--
+
+CREATE FUNCTION "addEmployee"("empName" character varying DEFAULT NULL::character varying, "empSalary" integer DEFAULT 0, "empHired" date DEFAULT NULL::date) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$BEGIN
+	IF NOT EXISTS (SELECT "id" FROM "employees" WHERE "employees"."name"=$1) THEN
+		RAISE NOTICE 'Attempting to insert a new employee record. (%)', $1;
+		INSERT INTO "employees"("name", "salary", "hired")
+		VALUES ($1, $2, $3);
+		IF NOT FOUND THEN 
+			RAISE NOTICE '(%) could not be added.', $1;	
+			RETURN FALSE; 
+		ELSE 
+			RAISE NOTICE '(%) have been successfully added.', $1;			
+			RETURN TRUE; 
+		END IF;
+	ELSE
+		RAISE WARNING '(%) already exists!', $1;			
+		RETURN FALSE;
+	END IF;
+END;$_$;
+
+
+ALTER FUNCTION public."addEmployee"("empName" character varying, "empSalary" integer, "empHired" date) OWNER TO phostgre;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 162 (class 1259 OID 26073)
+-- Dependencies: 6
+-- Name: employees; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
 CREATE TABLE employees (
     id integer NOT NULL,
     name character varying(24),
@@ -8,16 +80,125 @@ CREATE TABLE employees (
 
 ALTER TABLE public.employees OWNER TO postgres;
 
+--
+-- TOC entry 161 (class 1259 OID 26071)
+-- Dependencies: 6 162
+-- Name: employees_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE employees_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.employees_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 1904 (class 0 OID 0)
+-- Dependencies: 161
+-- Name: employees_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE employees_id_seq OWNED BY employees.id;
+
+
+--
+-- TOC entry 1789 (class 2604 OID 26076)
+-- Dependencies: 161 162 162
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY employees ALTER COLUMN id SET DEFAULT nextval('employees_id_seq'::regclass);
+
+
+--
+-- TOC entry 1894 (class 0 OID 26073)
+-- Dependencies: 162 1895
+-- Data for Name: employees; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
 COPY employees (id, name, salary, hired) FROM stdin;
-1	Bill Johnson	1250	2012-10-01
-2	Samantha Spark	2200	2011-06-02
-3	Garrett Schwartz	3200	2011-02-21
-4	Raghavesh Prakash	1500	2013-04-01
-5	Vijay Singh	1650	2013-01-01
+1	Brian Prince	1580	2013-11-18
+2	Vijay Singh	1580	2013-11-18
+3	Rajesh Prakash	1580	2013-11-18
+4	Christian Holmes	2500	2013-11-18
+5	Bill Roberts	2500	2012-10-29
+6	Roman Henry Johnson	3600	2012-10-29
+7	Mehmet Seckin	5622	2013-12-20
 \.
+
+
+--
+-- TOC entry 1906 (class 0 OID 0)
+-- Dependencies: 161
+-- Name: employees_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('employees_id_seq', 7, true);
+
+
+--
+-- TOC entry 1791 (class 2606 OID 26078)
+-- Dependencies: 162 162 1896
+-- Name: pk_employees_id; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
 
 ALTER TABLE ONLY employees
     ADD CONSTRAINT pk_employees_id PRIMARY KEY (id);
 
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO phostgre;
+
+--
+-- TOC entry 1901 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT USAGE ON SCHEMA public TO phostgre;
+
+
+--
+-- TOC entry 1903 (class 0 OID 0)
+-- Dependencies: 162
+-- Name: employees; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE employees FROM PUBLIC;
+REVOKE ALL ON TABLE employees FROM postgres;
+GRANT ALL ON TABLE employees TO phostgre WITH GRANT OPTION;
+
+
+--
+-- TOC entry 1905 (class 0 OID 0)
+-- Dependencies: 161
+-- Name: employees_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE employees_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE employees_id_seq FROM postgres;
+GRANT ALL ON SEQUENCE employees_id_seq TO postgres;
+
+
+--
+-- TOC entry 1417 (class 826 OID 26064)
+-- Dependencies: 6 1896
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES  FROM postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES  TO phostgre;
+
+
+-- Completed on 2013-12-03 12:47:38 EET
+
+--
+-- PostgreSQL database dump complete
+--
 
