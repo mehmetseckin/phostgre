@@ -1,7 +1,4 @@
 <?php
-// For debugging purposes ...
-error_reporting(E_ALL);
-
 // Database settings ...
 define("PgSQL_HOSTNAME", "localhost");
 define("PgSQL_USERNAME", "mku");
