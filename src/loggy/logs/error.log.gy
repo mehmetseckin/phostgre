@@ -28,3 +28,19 @@ LGY_1386068405.0905|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:167|pg_query
 LGY_1386068405.0911|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:255|pg_last_error(): No PostgreSQL link opened yet|2013-12-03 12:00:05
 LGY_1386068405.0917|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:204|pg_fetch_array() expects parameter 1 to be resource, null given|2013-12-03 12:00:05
 LGY_1386068405.0924|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:207|pg_free_result() expects parameter 1 to be resource, null given|2013-12-03 12:00:05
+LGY_1386069358.079|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:100|pg_connect(): Unable to connect to PostgreSQL server: FATAL: password authentication failed for user &quot;phostgre&quot;|2013-12-03 12:15:58
+LGY_1386069358.0801|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:167|pg_query() expects parameter 1 to be resource, boolean given|2013-12-03 12:15:58
+LGY_1386069358.0805|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:255|pg_last_error(): No PostgreSQL link opened yet|2013-12-03 12:15:58
+LGY_1386069358.0809|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:222|pg_fetch_assoc() expects parameter 1 to be resource, null given|2013-12-03 12:15:58
+LGY_1386069358.0813|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:167|pg_query() expects parameter 1 to be resource, boolean given|2013-12-03 12:15:58
+LGY_1386069358.0816|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:255|pg_last_error(): No PostgreSQL link opened yet|2013-12-03 12:15:58
+LGY_1386069358.082|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:204|pg_fetch_array() expects parameter 1 to be resource, null given|2013-12-03 12:15:58
+LGY_1386069358.0824|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:207|pg_free_result() expects parameter 1 to be resource, null given|2013-12-03 12:15:58
+LGY_1386069371.0509|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:100|pg_connect(): Unable to connect to PostgreSQL server: FATAL: password authentication failed for user &quot;phostgre&quot;|2013-12-03 12:16:11
+LGY_1386069371.0516|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:167|pg_query() expects parameter 1 to be resource, boolean given|2013-12-03 12:16:11
+LGY_1386069371.052|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:255|pg_last_error(): No PostgreSQL link opened yet|2013-12-03 12:16:11
+LGY_1386069371.0524|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:222|pg_fetch_assoc() expects parameter 1 to be resource, null given|2013-12-03 12:16:11
+LGY_1386069371.0529|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:167|pg_query() expects parameter 1 to be resource, boolean given|2013-12-03 12:16:11
+LGY_1386069371.0533|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:255|pg_last_error(): No PostgreSQL link opened yet|2013-12-03 12:16:11
+LGY_1386069371.0536|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:204|pg_fetch_array() expects parameter 1 to be resource, null given|2013-12-03 12:16:11
+LGY_1386069371.0539|::1|C:\xampp\htdocs\phostgre\src\lib\engine.php:207|pg_free_result() expects parameter 1 to be resource, null given|2013-12-03 12:16:11
