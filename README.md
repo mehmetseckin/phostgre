@@ -25,9 +25,20 @@ It's very simple to use! Follow these instructions and feel free to customize th
 * Enjoy the Engine class!
 
 
-		$engine = new Engine(); // Create an instance
-		$engine->setQuery("SELECT * FROM employees WHERE salary > 1000;"); // Set a query.
-		$results = $engine->loadMultiple(); // Load results as a 2d array, suitable for a foreach loop.
-		if($engine->hasErrors()) print $engine->complain(); // Check for errors.
-		$engine->addEmployee("Mehmet Seckin", 5000, "2013-01-01"); // Call your stored procedures right through the Engine.
-		$employeeAdded = $engine->loadBoolean(); // Load a boolean result.
+		// Create an instance
+		$engine = new Engine(); 
+		
+		// Set a query.
+		$engine->setQuery("SELECT * FROM employees WHERE salary > 1000;"); 
+		
+		// Load results as a 2d array, suitable for a foreach loop.
+		$results = $engine->loadMultiple(); 
+		
+		// Check for errors.
+		if($engine->hasErrors()) print $engine->complain(); 
+		
+		// Call your stored procedures right through the Engine.
+		$engine->addEmployee("Mehmet Seckin", 5000, "2013-01-01");
+		
+		// Load a boolean result.
+		$employeeAdded = $engine->loadBoolean();
