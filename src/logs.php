@@ -2,9 +2,6 @@
 /**
  * A little example script to demonstrate Loggy's work.
  * 
- * Note : This script uses the DataTables plug-in for jQuery.
- * Find more information at http://datatables.net/
- * 
  * - Check out the logs by calling 
  *     yourscript/logs.php
  * 
@@ -56,9 +53,6 @@ if($type!="HTML") {
 <html>
     <head>
         <title><?php echo $loggy->getFileName() . " | Powered by Loggy"; ?></title>
-        <link rel="stylesheet" media="screen" href="loggy/dataTables/css/jquery.dataTables.css" />
-        <script type="text/javascript" src="loggy/dataTables/js/jquery.js"></script>
-        <script type="text/javascript" src="loggy/dataTables/js/jquery.dataTables.js"></script>
     </head>
     <body>
         <?php
@@ -67,12 +61,5 @@ if($type!="HTML") {
         <hr>
         <p>Click <a href="?file=<?php echo $loggy->getFileName(); ?>&truncate=yes">here</a> to truncate the log file.</p>
         <p style="cursor:pointer" onclick="javascript:window.history.back();">Click here to go back.</p>
-        <script type="text/javascript">
-        $(document).ready(function() {
-           loggyTable = $("#loggy-entries").dataTable({
-                "bJQueryUI": true
-           });
-        });
-        </script>
     </body>
 </html>
